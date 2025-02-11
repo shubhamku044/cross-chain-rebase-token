@@ -35,7 +35,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     }
 
     function setInterestRate(uint256 _interestRate) external onlyOwner {
-        if (_interestRate >= s_interestRate) {
+        if (_interestRate > s_interestRate) {
             revert RebaseToken__InterestRateCanDecreaseOnly(
                 s_interestRate,
                 _interestRate
@@ -53,10 +53,11 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
 
     function mint(
         address _to,
-        uint256 _amount
+        uint256 _amount,
+        uint256 _userInterestRate
     ) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAccruedInterest(_to);
-        s_userInterestRate[_to] = s_interestRate;
+        s_userInterestRate[_to] = _userInterestRate;
         _mint(_to, _amount);
     }
 
